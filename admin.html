@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Dashboard - Orthopedic Appointments</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <h2>🦴 Orthopedic Clinic — Doctor Portal</h2>
+    <div>
+      <a href="index.html">Patient Booking</a>
+      <a href="admin.html" class="active">Appointments</a>
+    </div>
+  </nav>
+
+  <main class="container" style="max-width: 1100px;">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1 style="font-size: 1.4rem;">Patient Appointments Queue</h1>
+        <button id="refreshBtn" style="padding: 0.5rem 1rem; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; background: #fff;">↻ Refresh List</button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient Name</th>
+              <th>Mobile</th>
+              <th>Ortho Concern</th>
+              <th>Date</th>
+              <th>Slot</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentTableBody">
+            <tr>
+              <td colspan="8" style="text-align:center;">Loading appointments...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

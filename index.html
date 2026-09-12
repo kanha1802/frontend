@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elite Orthopedics - Appointment Booking</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <h2>🦴 Elite Orthopedics Clinic</h2>
+    <div>
+      <a href="index.html" class="active">Book Appointment</a>
+      <a href="admin.html">Doctor Dashboard</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card">
+      <span class="title-badge">Fast Registration & Booking</span>
+      <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Schedule Your Consultation</h1>
+      <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem;">
+        Specialist care for joints, fractures, spine health, sports injuries, and arthritis.
+      </p>
+
+      <form id="appointmentForm">
+        <div class="form-grid">
+          <!-- User Registration fields -->
+          <div class="form-group">
+            <label for="name">Patient Full Name *</label>
+            <input type="text" id="name" placeholder="e.g., Alex Johnson" required />
+          </div>
+
+          <div class="form-group">
+            <label for="mobile">Mobile Number *</label>
+            <input type="tel" id="mobile" placeholder="10-digit phone number" pattern="[0-9]{10}" required />
+          </div>
+
+          <!-- Clinical Details -->
+          <div class="form-group">
+            <label for="problem_type">Orthopedic Concern *</label>
+            <select id="problem_type" required>
+              <option value="">-- Select Condition --</option>
+              <option value="Knee & Joint Pain">Knee & Joint Pain</option>
+              <option value="Spine / Back / Neck Pain">Spine / Back / Neck Pain</option>
+              <option value="Bone Fracture / Trauma">Bone Fracture / Trauma</option>
+              <option value="Sports Injury (Ligament / Tendon)">Sports Injury (Ligament / Tendon)</option>
+              <option value="Arthritis & Rheumatology">Arthritis & Rheumatology</option>
+              <option value="Post-Surgery Follow-up">Post-Surgery Follow-up</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="appointment_date">Preferred Date *</label>
+            <input type="date" id="appointment_date" required />
+          </div>
+
+          <div class="form-group full">
+            <label for="time_slot">Preferred Time Slot *</label>
+            <select id="time_slot" required>
+              <option value="">-- Choose Slot --</option>
+              <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
+              <option value="10:30 AM - 11:30 AM">10:30 AM - 11:30 AM</option>
+              <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+              <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+              <option value="05:30 PM - 06:30 PM">05:30 PM - 06:30 PM</option>
+              <option value="07:00 PM - 08:00 PM">07:00 PM - 08:00 PM</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="notes">Brief Symptoms / Notes (Optional)</label>
+            <textarea id="notes" rows="3" placeholder="Specify pain duration, previous MRI/X-ray reports, or surgery history..."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">Confirm Booking</button>
+      </form>
+
+      <div id="feedbackAlert" class="alert"></div>
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
