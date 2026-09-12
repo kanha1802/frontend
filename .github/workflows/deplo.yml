@@ -81,5 +81,20 @@ jobs:
 
       - name: Verify Frontend Endpoint
         run: |
+          echo "Checking frontend availability with retries..."
+          for i in {1..6}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://${{ secrets.FRONTEND_EC2_HOST }}/ || true)
+            echo "Attempt $i: HTTP Status $STATUS"
+            if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ]; then
+              echo "Frontend is healthy!"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Frontend failed to respond."
+          exit 1
+
+      - name: Verify Frontend Endpoint
+        run: |
           echo "Checking frontend availability..."
           curl -sf -o /dev/null -w 'HTTP Status: %{http_code}\n' https://${{ secrets.FRONTEND_EC2_HOST }}/ || curl -sf -o /dev/null -w 'HTTP Status: %{http_code}\n' http://${{ secrets.FRONTEND_EC2_HOST }}/
