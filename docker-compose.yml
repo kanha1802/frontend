@@ -1,7 +1,6 @@
 services:
-services:
   frontend:
-    image: 310297108749.dkr.ecr.ap-south-1.amazonaws.com/ortho/frontend:latest
+    image: 310297108749.dkr.ecr.ap-south-1.amazonaws.com/ortho/appointment:latest
     container_name: ortho_frontend
     restart: always
     ports:
