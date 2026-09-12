@@ -1,14 +1,13 @@
 services:
+services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: 310297108749.dkr.ecr.ap-south-1.amazonaws.com/ortho/frontend:latest
     container_name: ortho_frontend
     restart: always
     ports:
       - "80:80"
       - "443:443"
     environment:
-      BACKEND_PRIVATE_IP: "10.0.2.194"  # Replace with EC2-2's actual Private IP
+      BACKEND_PRIVATE_IP: "10.0.2.194"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
