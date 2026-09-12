@@ -1,0 +1,85 @@
+name: Deploy Frontend - ECR Build & Run on EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    name: Build & Push Frontend to ECR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Frontend Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Docker Image
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_REPO: ${{ secrets.ECR_FRONTEND_REPO }}
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+
+  deploy-ec2:
+    name: Deploy to Frontend EC2
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.FRONTEND_EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "~/frontend/"
+          rm: false
+
+      - name: Pull from ECR & Restart Container
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          AWS_REGION: ap-south-1
+        with:
+          host: ${{ secrets.FRONTEND_EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 30s
+          command_timeout: 10m
+          envs: ECR_REGISTRY,AWS_REGION
+          script: |
+            mkdir -p ~/frontend
+            cd ~/frontend || exit 1
+
+            # 1. Authenticate EC2 Docker with Amazon ECR
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+            # 2. Pull the newly pushed image
+            docker compose pull
+
+            # 3. Recreate container with zero orphan leftovers
+            docker compose down
+            docker compose up -d --remove-orphans
+
+            # 4. Clean up dangling cached images to save disk space
+            docker image prune -f
+
+      - name: Verify Frontend Endpoint
+        run: |
+          echo "Checking frontend availability..."
+          curl -sf -o /dev/null -w 'HTTP Status: %{http_code}\n' https://${{ secrets.FRONTEND_EC2_HOST }}/ || curl -sf -o /dev/null -w 'HTTP Status: %{http_code}\n' http://${{ secrets.FRONTEND_EC2_HOST }}/
